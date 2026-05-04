@@ -82,17 +82,17 @@
     .cat-tab.spreadsheet .dot { background: #57ffb8; }
 
     .dropzone-wrap { background: var(--surface); border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 56px 32px; text-align: center; transition: all 0.25s ease; cursor: pointer; position: relative; overflow: hidden; }
-    .dropzone-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(200,255,87,0.03), transparent 60%); pointer-events: none; }
-    .dropzone-wrap:hover, .dropzone-wrap.drag-over { border-color: var(--accent); background: #111a00; }
+    .dropzone-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--accent-glow, rgba(200,255,87,0.03)), transparent 60%); pointer-events: none; }
+    .dropzone-wrap:hover, .dropzone-wrap.drag-over { border-color: var(--accent); background: var(--surface2); }
     .dropzone-wrap.drag-over { transform: scale(1.01); }
     .drop-icon { width: 64px; height: 64px; background: var(--surface2); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid var(--border); transition: all 0.3s; }
-    .dropzone-wrap:hover .drop-icon { background: rgba(200,255,87,0.08); border-color: var(--accent); }
+    .dropzone-wrap:hover .drop-icon { background: var(--accent-subtle, rgba(200,255,87,0.08)); border-color: var(--accent); }
     .drop-icon svg { width: 28px; height: 28px; stroke: var(--muted); transition: stroke 0.3s; }
     .dropzone-wrap:hover .drop-icon svg { stroke: var(--accent); }
     .drop-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
     .drop-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
-    .btn-browse { display: inline-block; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; padding: 12px 28px; border-radius: 100px; background: var(--accent); color: #0a0a0f; cursor: pointer; transition: all 0.2s; border: none; }
-    .btn-browse:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(200,255,87,0.25); }
+    .btn-browse { display: inline-block; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; padding: 12px 28px; border-radius: 100px; background: var(--accent); color: var(--btn-text, #0a0a0f); cursor: pointer; transition: all 0.2s; border: none; }
+    .btn-browse:hover { transform: translateY(-2px); box-shadow: 0 12px 32px var(--accent-shadow, rgba(200,255,87,0.25)); }
     #fileInput { display: none; }
 
     #fileQueue { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
@@ -123,10 +123,10 @@
     .btn-remove:hover { color: var(--danger); }
 
     #convertSection { margin-top: 28px; display: none; flex-direction: column; align-items: center; gap: 12px; }
-    .btn-convert { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 0.5px; padding: 16px 52px; border-radius: 100px; background: var(--accent); color: #0a0a0f; cursor: pointer; border: none; transition: all 0.25s; position: relative; overflow: hidden; }
+    .btn-convert { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 0.5px; padding: 16px 52px; border-radius: 100px; background: var(--accent); color: var(--btn-text, #0a0a0f); cursor: pointer; border: none; transition: all 0.25s; position: relative; overflow: hidden; }
     .btn-convert::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transform: translateX(-100%); transition: transform 0.5s; }
     .btn-convert:hover::before { transform: translateX(100%); }
-    .btn-convert:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(200,255,87,0.3); }
+    .btn-convert:hover { transform: translateY(-3px); box-shadow: 0 16px 40px var(--accent-shadow, rgba(200,255,87,0.3)); }
     .btn-convert:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
     .convert-note { font-size: 11px; color: var(--muted); text-align: center; }
 
@@ -157,10 +157,142 @@
     footer { text-align: center; padding: 56px 0 32px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 72px; }
     footer strong { color: var(--text); }
 
+    /* ── Theme Button ─────────────────────────────────────────── */
+    .theme-btn {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 100px; padding: 7px 14px 7px 10px;
+      color: var(--muted); font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.5px; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .theme-btn:hover { border-color: var(--accent); color: var(--text); }
+    .theme-btn-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: conic-gradient(var(--accent) 0deg 120deg, var(--accent2) 120deg 240deg, var(--bg) 240deg 360deg);
+      flex-shrink: 0; transition: transform 0.3s;
+    }
+    .theme-btn:hover .theme-btn-dot { transform: rotate(90deg); }
+
+    /* ── Theme Panel ──────────────────────────────────────────── */
+    .theme-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .theme-overlay.open { opacity: 1; pointer-events: all; }
+
+    .theme-panel {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: 320px; z-index: 201;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+    }
+    .theme-overlay.open .theme-panel { transform: translateX(0); }
+
+    .theme-panel-header {
+      padding: 24px 24px 0;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .theme-panel-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+    }
+    .theme-close {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--muted); transition: all 0.2s;
+    }
+    .theme-close:hover { color: var(--text); border-color: var(--muted); }
+
+    .theme-panel-body { padding: 20px 24px 32px; flex: 1; display: flex; flex-direction: column; gap: 24px; }
+
+    .theme-section-label {
+      font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+
+    /* Preset swatches */
+    .theme-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .theme-preset {
+      border-radius: 12px; padding: 12px;
+      border: 2px solid transparent; cursor: pointer;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .theme-preset.active { border-color: var(--accent); }
+    .theme-preset-swatch {
+      display: flex; gap: 4px; margin-bottom: 8px;
+    }
+    .theme-preset-swatch span {
+      flex: 1; height: 8px; border-radius: 4px;
+    }
+    .theme-preset-name {
+      font-size: 11px; font-weight: 600; font-family: 'Syne', sans-serif;
+    }
+    .theme-preset-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .theme-preset .check {
+      position: absolute; top: 8px; right: 8px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent); color: #000;
+      font-size: 9px; display: none;
+      align-items: center; justify-content: center;
+    }
+    .theme-preset.active .check { display: flex; }
+
+    /* Custom color pickers */
+    .color-pickers { display: flex; flex-direction: column; gap: 10px; }
+    .color-row {
+      display: flex; align-items: center;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 12px; gap: 12px;
+      transition: border-color 0.2s; cursor: pointer;
+    }
+    .color-row:hover { border-color: var(--muted); }
+    .color-preview {
+      width: 28px; height: 28px; border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.1); flex-shrink: 0;
+      position: relative; overflow: hidden; cursor: pointer;
+    }
+    .color-preview input[type="color"] {
+      position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px);
+      opacity: 0; cursor: pointer; border: none; padding: 0;
+    }
+    .color-row-info { flex: 1; }
+    .color-row-name { font-size: 12px; color: var(--text); font-weight: 500; }
+    .color-row-val { font-size: 10px; color: var(--muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
+
+    /* Dark/Light mode toggle */
+    .mode-toggle { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+    .mode-btn { flex: 1; padding: 8px; font-size: 11px; font-family: 'DM Mono', monospace; border: none; background: none; color: var(--muted); cursor: pointer; border-radius: 7px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .mode-btn.active { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+    /* Reset */
+    .theme-reset {
+      width: 100%; padding: 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: none;
+      color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .theme-reset:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* Live preview stripe */
+    .theme-live-bar {
+      height: 3px; width: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      flex-shrink: 0;
+    }
+
     @media (max-width: 600px) {
       .hero h1 { letter-spacing: -1.5px; }
       .file-card { flex-wrap: wrap; }
       .format-select { max-width: 100%; width: 100%; }
+      .theme-panel { width: 100%; }
     }
   </style>
 </head>
@@ -171,7 +303,13 @@
 <div class="container">
   <header>
     <div class="logo">conver<span>tr</span></div>
-    <div class="badge">100% Local · Grátis</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="badge">100% Local · Grátis</div>
+      <button class="theme-btn" onclick="openTheme()">
+        <span class="theme-btn-dot"></span>
+        Temas
+      </button>
+    </div>
   </header>
 
   <section class="hero">
@@ -266,6 +404,93 @@
       </div>
     </div>
   </section>
+</div>
+
+<div id="themeOverlay" class="theme-overlay" onclick="handleOverlayClick(event)">
+  <div class="theme-panel" onclick="event.stopPropagation()">
+    <div class="theme-live-bar"></div>
+    <div class="theme-panel-header">
+      <div class="theme-panel-title">🎨 Personalizar</div>
+      <button class="theme-close" onclick="closeTheme()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="theme-panel-body">
+
+      <!-- Mode -->
+      <div>
+        <div class="theme-section-label">Modo</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="modeDark" onclick="setMode('dark')">🌙 Escuro</button>
+          <button class="mode-btn" id="modeLight" onclick="setMode('light')">☀️ Claro</button>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div>
+        <div class="theme-section-label">Temas Prontos</div>
+        <div class="theme-presets" id="presetGrid"></div>
+      </div>
+
+      <!-- Custom Colors -->
+      <div>
+        <div class="theme-section-label">Cores Personalizadas</div>
+        <div class="color-pickers">
+          <div class="color-row" onclick="this.querySelector('input').click()">
+            <div class="color-preview" id="prev-accent">
+              <input type="color" id="pick-accent" oninput="applyCustomColor('accent',this.value)" />
+            </div>
+            <div class="color-row-info">
+              <div class="color-row-name">Cor de Destaque</div>
+              <div class="color-row-val" id="val-accent">#c8ff57</div>
+            </div>
+          </div>
+          <div class="color-row" onclick="this.querySelector('input').click()">
+            <div class="color-preview" id="prev-accent2">
+              <input type="color" id="pick-accent2" oninput="applyCustomColor('accent2',this.value)" />
+            </div>
+            <div class="color-row-info">
+              <div class="color-row-name">Cor Secundária</div>
+              <div class="color-row-val" id="val-accent2">#57d4ff</div>
+            </div>
+          </div>
+          <div class="color-row" onclick="this.querySelector('input').click()">
+            <div class="color-preview" id="prev-bg">
+              <input type="color" id="pick-bg" oninput="applyCustomColor('bg',this.value)" />
+            </div>
+            <div class="color-row-info">
+              <div class="color-row-name">Fundo</div>
+              <div class="color-row-val" id="val-bg">#0a0a0f</div>
+            </div>
+          </div>
+          <div class="color-row" onclick="this.querySelector('input').click()">
+            <div class="color-preview" id="prev-surface">
+              <input type="color" id="pick-surface" oninput="applyCustomColor('surface',this.value)" />
+            </div>
+            <div class="color-row-info">
+              <div class="color-row-name">Superfície dos Cards</div>
+              <div class="color-row-val" id="val-surface">#111118</div>
+            </div>
+          </div>
+          <div class="color-row" onclick="this.querySelector('input').click()">
+            <div class="color-preview" id="prev-text">
+              <input type="color" id="pick-text" oninput="applyCustomColor('text',this.value)" />
+            </div>
+            <div class="color-row-info">
+              <div class="color-row-name">Texto Principal</div>
+              <div class="color-row-val" id="val-text">#f0f0f5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset -->
+      <button class="theme-reset" onclick="resetTheme()">↺ Restaurar padrão</button>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -753,6 +978,209 @@ function showToast(msg, type='') {
   t.textContent = msg; t.className = 'show ' + type;
   setTimeout(()=>t.className='', 3800);
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// THEME SYSTEM
+// ═══════════════════════════════════════════════════════════════════
+
+const PRESETS = [
+  {
+    id: 'default', name: 'Neon Verde', sub: 'Padrão',
+    accent: '#c8ff57', accent2: '#57d4ff',
+    dark:  { bg: '#0a0a0f', surface: '#111118', surface2: '#18181f', text: '#f0f0f5', muted: '#6b6b80', border: 'rgba(255,255,255,0.07)' },
+    light: { bg: '#f4f7f0', surface: '#ffffff', surface2: '#eef2e8', text: '#111118', muted: '#7a7a8a', border: 'rgba(0,0,0,0.08)' },
+  },
+  {
+    id: 'purple', name: 'Roxo Cósmico', sub: 'Galáxia',
+    accent: '#c87fff', accent2: '#ff57d4',
+    dark:  { bg: '#0d0a14', surface: '#15101e', surface2: '#1c1428', text: '#f0eeff', muted: '#7a6b8a', border: 'rgba(200,127,255,0.08)' },
+    light: { bg: '#f5f0ff', surface: '#ffffff', surface2: '#ede5ff', text: '#1a0d2e', muted: '#7a6b8a', border: 'rgba(0,0,0,0.08)' },
+  },
+  {
+    id: 'amber', name: 'Âmbar Solar', sub: 'Quente',
+    accent: '#ffb347', accent2: '#ff6f47',
+    dark:  { bg: '#0f0c07', surface: '#191208', surface2: '#22180a', text: '#fff5e0', muted: '#8a7a5a', border: 'rgba(255,179,71,0.08)' },
+    light: { bg: '#fff8ee', surface: '#ffffff', surface2: '#fff0d4', text: '#1a1000', muted: '#8a7a5a', border: 'rgba(0,0,0,0.08)' },
+  },
+  {
+    id: 'cyan', name: 'Ciano Gelo', sub: 'Frio',
+    accent: '#57fff4', accent2: '#57b4ff',
+    dark:  { bg: '#060f12', surface: '#0c1a1e', surface2: '#112228', text: '#e0faff', muted: '#5a7a80', border: 'rgba(87,255,244,0.07)' },
+    light: { bg: '#edfffe', surface: '#ffffff', surface2: '#d4fafe', text: '#041518', muted: '#5a7a80', border: 'rgba(0,0,0,0.08)' },
+  },
+  {
+    id: 'rose', name: 'Rosa Neon', sub: 'Vibrante',
+    accent: '#ff57a8', accent2: '#ff8c57',
+    dark:  { bg: '#120a0d', surface: '#1e1015', surface2: '#28141c', text: '#ffe0ee', muted: '#8a5a6b', border: 'rgba(255,87,168,0.08)' },
+    light: { bg: '#fff0f5', surface: '#ffffff', surface2: '#ffd4e5', text: '#200010', muted: '#8a5a6b', border: 'rgba(0,0,0,0.08)' },
+  },
+  {
+    id: 'mono', name: 'Monocromático', sub: 'Minimalista',
+    accent: '#e0e0e0', accent2: '#a0a0a0',
+    dark:  { bg: '#080808', surface: '#111111', surface2: '#1a1a1a', text: '#f0f0f0', muted: '#666666', border: 'rgba(255,255,255,0.07)' },
+    light: { bg: '#f5f5f5', surface: '#ffffff', surface2: '#ebebeb', text: '#111111', muted: '#888888', border: 'rgba(0,0,0,0.08)' },
+  },
+];
+
+let currentTheme = { presetId: 'default', mode: 'dark', custom: {} };
+
+function openTheme()  { document.getElementById('themeOverlay').classList.add('open'); }
+function closeTheme() { document.getElementById('themeOverlay').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('themeOverlay')) closeTheme(); }
+
+function buildPresetGrid() {
+  const grid = document.getElementById('presetGrid');
+  grid.innerHTML = '';
+  PRESETS.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'theme-preset' + (currentTheme.presetId === p.id ? ' active' : '');
+    el.dataset.id = p.id;
+    el.style.background = currentTheme.mode === 'dark' ? p.dark.surface : p.light.surface;
+    el.style.border = `2px solid ${currentTheme.presetId === p.id ? p.accent : 'transparent'}`;
+    el.innerHTML = `
+      <div class="theme-preset-swatch">
+        <span style="background:${p.accent}"></span>
+        <span style="background:${p.accent2}"></span>
+        <span style="background:${currentTheme.mode==='dark'?p.dark.bg:p.light.bg}"></span>
+      </div>
+      <div class="theme-preset-name" style="color:${currentTheme.mode==='dark'?p.dark.text:p.light.text}">${p.name}</div>
+      <div class="theme-preset-sub">${p.sub}</div>
+      <div class="check">✓</div>
+    `;
+    el.onclick = () => applyPreset(p.id);
+    grid.appendChild(el);
+  });
+}
+
+function applyPreset(id) {
+  currentTheme.presetId = id;
+  currentTheme.custom = {};
+  applyCurrentTheme();
+  buildPresetGrid();
+  saveTheme();
+}
+
+function setMode(mode) {
+  currentTheme.mode = mode;
+  document.getElementById('modeDark').classList.toggle('active', mode==='dark');
+  document.getElementById('modeLight').classList.toggle('active', mode==='light');
+  applyCurrentTheme();
+  buildPresetGrid();
+  saveTheme();
+}
+
+function applyCurrentTheme() {
+  const preset = PRESETS.find(p => p.id === currentTheme.presetId) || PRESETS[0];
+  const base = currentTheme.mode === 'dark' ? preset.dark : preset.light;
+  const accent  = currentTheme.custom.accent   || preset.accent;
+  const accent2 = currentTheme.custom.accent2  || preset.accent2;
+  const bg      = currentTheme.custom.bg       || base.bg;
+  const surface = currentTheme.custom.surface  || base.surface;
+  const text    = currentTheme.custom.text     || base.text;
+
+  // Determine button text contrast (dark text on light accent, light text on dark accent)
+  const btnText = isLightColor(accent) ? '#0a0a0f' : '#f0f0f5';
+
+  // Build accent shadow & subtle from accent color
+  const r = hexToRgb(accent);
+  const accentShadow  = r ? `rgba(${r.r},${r.g},${r.b},0.30)` : 'rgba(200,255,87,0.30)';
+  const accentSubtle  = r ? `rgba(${r.r},${r.g},${r.b},0.10)` : 'rgba(200,255,87,0.10)';
+  const accentGlow    = r ? `rgba(${r.r},${r.g},${r.b},0.04)` : 'rgba(200,255,87,0.04)';
+
+  const vars = {
+    '--accent':        accent,
+    '--accent2':       accent2,
+    '--bg':            bg,
+    '--surface':       surface,
+    '--surface2':      base.surface2,
+    '--text':          text,
+    '--muted':         base.muted,
+    '--border':        base.border,
+    '--btn-text':      btnText,
+    '--accent-shadow': accentShadow,
+    '--accent-subtle': accentSubtle,
+    '--accent-glow':   accentGlow,
+  };
+  const root = document.documentElement;
+  for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
+
+  // Update glow blobs
+  const r2 = hexToRgb(accent2);
+  document.querySelector('.glow-1').style.background = r
+    ? `radial-gradient(circle, rgba(${r.r},${r.g},${r.b},0.07) 0%, transparent 70%)` : '';
+  document.querySelector('.glow-2').style.background = r2
+    ? `radial-gradient(circle, rgba(${r2.r},${r2.g},${r2.b},0.06) 0%, transparent 70%)` : '';
+
+  // Update color pickers UI
+  updatePickerUI('accent',  accent);
+  updatePickerUI('accent2', accent2);
+  updatePickerUI('bg',      bg);
+  updatePickerUI('surface', surface);
+  updatePickerUI('text',    text);
+}
+
+function applyCustomColor(key, value) {
+  currentTheme.custom[key] = value;
+  currentTheme.presetId = 'custom';
+  document.querySelectorAll('.theme-preset').forEach(el => el.classList.remove('active'));
+  // Re-apply full theme so all derived vars update correctly
+  applyCurrentTheme();
+  saveTheme();
+}
+
+function updatePickerUI(key, value) {
+  const prev = document.getElementById('prev-' + key);
+  const pick = document.getElementById('pick-' + key);
+  const val  = document.getElementById('val-' + key);
+  if (!prev) return;
+  prev.style.background = value;
+  if (pick && isValidHex(value)) pick.value = value;
+  if (val) val.textContent = value;
+}
+
+function resetTheme() {
+  currentTheme = { presetId: 'default', mode: 'dark', custom: {} };
+  setMode('dark');
+  applyCurrentTheme();
+  buildPresetGrid();
+  saveTheme();
+  showToast('Tema restaurado!', 'success');
+}
+
+function saveTheme() {
+  try { localStorage.setItem('convertr_theme', JSON.stringify(currentTheme)); } catch(e) {}
+}
+
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem('convertr_theme');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      currentTheme = { ...currentTheme, ...parsed };
+      if (currentTheme.mode === 'light') setMode('light');
+    }
+  } catch(e) {}
+  applyCurrentTheme();
+  buildPresetGrid();
+}
+
+function hexToRgb(hex) {
+  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r ? { r: parseInt(r[1],16), g: parseInt(r[2],16), b: parseInt(r[3],16) } : null;
+}
+
+function isLightColor(hex) {
+  const c = hexToRgb(hex);
+  if (!c) return false;
+  // Perceived luminance
+  const lum = (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) / 255;
+  return lum > 0.55;
+}
+
+function isValidHex(h) { return /^#[0-9a-f]{6}$/i.test(h); }
+
+// Init theme on load
+loadTheme();
 </script>
 </body>
 </html>
