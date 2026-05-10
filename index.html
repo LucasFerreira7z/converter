@@ -1,1186 +1,381 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Convertr — Conversão de Arquivos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>VLTX — File Converter</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css?v=3" />
+        <link rel="stylesheet" href="theme.css?v=3" />
+        <!-- Conversion libraries -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    </head>
+    <body>
+        <div class="bg-glow"></div>
+        <div class="bg-grid"></div>
 
-  <!-- Libraries via CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <div class="wrap">
+            <!-- ══ HEADER ══ -->
+            <header>
+                <div>
+                    <div class="logo">VLTX</div>
+                    <div class="logo-sub">File Converter</div>
+                </div>
+                <div class="header-right">
+                    <div class="pill-badge">100% Local</div>
+                    <button class="theme-toggle-btn" onclick="openTheme()">
+                        <span class="theme-dot"></span>Temas
+                    </button>
+                </div>
+            </header>
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0a0a0f;
-      --surface: #111118;
-      --surface2: #18181f;
-      --border: rgba(255,255,255,0.07);
-      --accent: #c8ff57;
-      --accent2: #57d4ff;
-      --text: #f0f0f5;
-      --muted: #6b6b80;
-      --danger: #ff5757;
-      --warning: #ffb347;
-      --radius: 16px;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'DM Mono', monospace;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(200,255,87,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(200,255,87,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none; z-index: 0;
-    }
-    .glow-1 {
-      position: fixed; width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(200,255,87,0.06) 0%, transparent 70%);
-      top: -200px; left: -200px; pointer-events: none; z-index: 0;
-      animation: drift1 20s ease-in-out infinite;
-    }
-    .glow-2 {
-      position: fixed; width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(87,212,255,0.05) 0%, transparent 70%);
-      bottom: -150px; right: -150px; pointer-events: none; z-index: 0;
-      animation: drift2 25s ease-in-out infinite;
-    }
-    @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(80px,60px)} }
-    @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-60px,-80px)} }
+            <!-- ══ HERO ══ -->
+            <section class="hero">
+                <div class="hero-eyebrow">⚡ Conversor universal</div>
+                <h1>
+                    <span class="line1">CONVERTA</span>
+                    <span class="line2">QUALQUER COISA</span>
+                </h1>
+                <p class="hero-desc">
+                    Arquivos, documentos, imagens, áudio e dados — tudo
+                    convertido direto no navegador. Nenhum dado enviado a
+                    servidores.
+                </p>
 
-    .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 24px; }
+                <!-- ── FILES ── -->
+                <div>
+                    <div class="dropzone" id="dropzone">
+                        <div class="dz-icon">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
+                        <div class="dz-title">Arraste seus arquivos aqui</div>
+                        <div class="dz-sub">
+                            DOCX · XLSX · PPTX · PDF · PNG · JPG · MP3 · CSV ·
+                            JSON e mais
+                        </div>
+                        <button
+                            class="btn-primary"
+                            onclick="
+                                document.getElementById('fileInput').click()
+                            "
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                            >
+                                <path
+                                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Selecionar Arquivos
+                        </button>
+                        <input
+                            type="file"
+                            id="fileInput"
+                            multiple
+                            accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.txt,.csv,.json,.xml,.html,.md,
+                  .png,.jpg,.jpeg,.webp,.gif,.bmp,.svg,.ico,.mp3,.wav,.ogg,.webm,.aac"
+                        />
+                        <div class="format-strip">
+                            <span class="fmt">DOCX</span
+                            ><span class="fmt">XLSX</span
+                            ><span class="fmt">PPTX</span>
+                            <span class="fmt">PDF</span
+                            ><span class="fmt">PNG</span
+                            ><span class="fmt">JPG</span>
+                            <span class="fmt">WEBP</span
+                            ><span class="fmt">MP3</span
+                            ><span class="fmt">CSV</span>
+                            <span class="fmt">JSON</span
+                            ><span class="fmt">XML</span
+                            ><span class="fmt">HTML</span>
+                        </div>
+                    </div>
 
-    header { padding: 32px 0 0; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
-    .logo span { color: var(--accent); }
-    .badge { font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); padding: 5px 12px; border-radius: 100px; }
+                    <div id="fileQueue"></div>
 
-    .hero { padding: 72px 0 40px; text-align: center; }
-    .hero h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(38px, 7vw, 68px); line-height: 1.05; letter-spacing: -2px; margin-bottom: 16px; }
-    .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero p { color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 520px; margin: 0 auto 36px; }
+                    <div id="convertSection">
+                        <button
+                            class="btn-convert"
+                            id="convertBtn"
+                            onclick="convertAll()"
+                        >
+                            ⚡ Converter Tudo
+                        </button>
+                        <div class="convert-note">
+                            Processamento 100% local · Privado · Sem limite de
+                            tamanho
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    .cat-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
-    .cat-tab { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 7px 16px; border-radius: 100px; border: 1px solid var(--border); color: var(--muted); background: var(--surface); display: flex; align-items: center; gap: 6px; }
-    .cat-tab .dot { width: 6px; height: 6px; border-radius: 50%; }
-    .cat-tab.office .dot { background: #4fc3f7; }
-    .cat-tab.image .dot { background: #c8ff57; }
-    .cat-tab.text .dot { background: #ffb347; }
-    .cat-tab.audio .dot { background: #cf87ff; }
-    .cat-tab.spreadsheet .dot { background: #57ffb8; }
-
-    .dropzone-wrap { background: var(--surface); border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 56px 32px; text-align: center; transition: all 0.25s ease; cursor: pointer; position: relative; overflow: hidden; }
-    .dropzone-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--accent-glow, rgba(200,255,87,0.03)), transparent 60%); pointer-events: none; }
-    .dropzone-wrap:hover, .dropzone-wrap.drag-over { border-color: var(--accent); background: var(--surface2); }
-    .dropzone-wrap.drag-over { transform: scale(1.01); }
-    .drop-icon { width: 64px; height: 64px; background: var(--surface2); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid var(--border); transition: all 0.3s; }
-    .dropzone-wrap:hover .drop-icon { background: var(--accent-subtle, rgba(200,255,87,0.08)); border-color: var(--accent); }
-    .drop-icon svg { width: 28px; height: 28px; stroke: var(--muted); transition: stroke 0.3s; }
-    .dropzone-wrap:hover .drop-icon svg { stroke: var(--accent); }
-    .drop-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-    .drop-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
-    .btn-browse { display: inline-block; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; padding: 12px 28px; border-radius: 100px; background: var(--accent); color: var(--btn-text, #0a0a0f); cursor: pointer; transition: all 0.2s; border: none; }
-    .btn-browse:hover { transform: translateY(-2px); box-shadow: 0 12px 32px var(--accent-shadow, rgba(200,255,87,0.25)); }
-    #fileInput { display: none; }
-
-    #fileQueue { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-    .file-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; }
-    @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
-    .file-type-badge { font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 4px 9px; border-radius: 7px; background: var(--surface2); border: 1px solid var(--border); white-space: nowrap; min-width: 46px; text-align: center; }
-    .file-type-badge.cat-office  { color: #4fc3f7; border-color: rgba(79,195,247,0.25); background: rgba(79,195,247,0.06); }
-    .file-type-badge.cat-image   { color: var(--accent); border-color: rgba(200,255,87,0.25); background: rgba(200,255,87,0.06); }
-    .file-type-badge.cat-text    { color: var(--warning); border-color: rgba(255,179,71,0.25); background: rgba(255,179,71,0.06); }
-    .file-type-badge.cat-audio   { color: #cf87ff; border-color: rgba(207,135,255,0.25); background: rgba(207,135,255,0.06); }
-    .file-type-badge.cat-spreadsheet { color: #57ffb8; border-color: rgba(87,255,184,0.25); background: rgba(87,255,184,0.06); }
-    .file-type-badge.cat-unknown { color: var(--muted); }
-
-    .file-info { flex: 1; overflow: hidden; min-width: 0; }
-    .file-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .file-size { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .progress-bar-wrap { height: 2px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; display: none; }
-    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0%; transition: width 0.3s ease; border-radius: 2px; }
-    .file-card.converting .progress-bar-wrap { display: block; }
-    .file-status { font-size: 10px; margin-top: 4px; color: var(--muted); display: none; }
-
-    .format-select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 7px 10px; cursor: pointer; outline: none; transition: border-color 0.2s; max-width: 115px; }
-    .format-select:focus { border-color: var(--accent); }
-    .format-select option { background: #1a1a24; }
-
-    .btn-remove { background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; display: flex; align-items: center; transition: color 0.2s; }
-    .btn-remove:hover { color: var(--danger); }
-
-    #convertSection { margin-top: 28px; display: none; flex-direction: column; align-items: center; gap: 12px; }
-    .btn-convert { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 0.5px; padding: 16px 52px; border-radius: 100px; background: var(--accent); color: var(--btn-text, #0a0a0f); cursor: pointer; border: none; transition: all 0.25s; position: relative; overflow: hidden; }
-    .btn-convert::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transform: translateX(-100%); transition: transform 0.5s; }
-    .btn-convert:hover::before { transform: translateX(100%); }
-    .btn-convert:hover { transform: translateY(-3px); box-shadow: 0 16px 40px var(--accent-shadow, rgba(200,255,87,0.3)); }
-    .btn-convert:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
-    .convert-note { font-size: 11px; color: var(--muted); text-align: center; }
-
-    .section-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
-    .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-top: 56px; }
-    .how-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px 22px; position: relative; overflow: hidden; }
-    .how-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); }
-    .how-num { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: rgba(200,255,87,0.1); line-height: 1; margin-bottom: 10px; }
-    .how-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 5px; }
-    .how-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
-
-    .support-section { margin-top: 64px; }
-    .support-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 20px; }
-    .support-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 18px; }
-    .support-card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .support-card-title .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .support-rows { display: flex; flex-direction: column; gap: 8px; }
-    .support-row { display: flex; align-items: center; font-size: 11px; gap: 6px; }
-    .support-from { color: var(--text); font-weight: 500; min-width: 60px; }
-    .support-arrow { color: var(--muted); }
-    .support-to { color: var(--muted); }
-
-    #toast { position: fixed; bottom: 32px; right: 32px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px; font-size: 13px; color: var(--text); z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); max-width: 320px; }
-    #toast.show { transform: translateY(0); opacity: 1; }
-    #toast.success { border-color: var(--accent); }
-    #toast.error { border-color: var(--danger); }
-
-    footer { text-align: center; padding: 56px 0 32px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 72px; }
-    footer strong { color: var(--text); }
-
-    /* ── Theme Button ─────────────────────────────────────────── */
-    .theme-btn {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 100px; padding: 7px 14px 7px 10px;
-      color: var(--muted); font-family: 'DM Mono', monospace;
-      font-size: 11px; letter-spacing: 0.5px; cursor: pointer;
-      transition: all 0.2s; white-space: nowrap;
-    }
-    .theme-btn:hover { border-color: var(--accent); color: var(--text); }
-    .theme-btn-dot {
-      width: 14px; height: 14px; border-radius: 50%;
-      background: conic-gradient(var(--accent) 0deg 120deg, var(--accent2) 120deg 240deg, var(--bg) 240deg 360deg);
-      flex-shrink: 0; transition: transform 0.3s;
-    }
-    .theme-btn:hover .theme-btn-dot { transform: rotate(90deg); }
-
-    /* ── Theme Panel ──────────────────────────────────────────── */
-    .theme-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    .theme-overlay.open { opacity: 1; pointer-events: all; }
-
-    .theme-panel {
-      position: fixed; top: 0; right: 0; bottom: 0;
-      width: 320px; z-index: 201;
-      background: var(--surface);
-      border-left: 1px solid var(--border);
-      display: flex; flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      overflow-y: auto;
-    }
-    .theme-overlay.open .theme-panel { transform: translateX(0); }
-
-    .theme-panel-header {
-      padding: 24px 24px 0;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .theme-panel-title {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
-    }
-    .theme-close {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 8px; width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: var(--muted); transition: all 0.2s;
-    }
-    .theme-close:hover { color: var(--text); border-color: var(--muted); }
-
-    .theme-panel-body { padding: 20px 24px 32px; flex: 1; display: flex; flex-direction: column; gap: 24px; }
-
-    .theme-section-label {
-      font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 10px;
-    }
-
-    /* Preset swatches */
-    .theme-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .theme-preset {
-      border-radius: 12px; padding: 12px;
-      border: 2px solid transparent; cursor: pointer;
-      transition: all 0.2s; position: relative; overflow: hidden;
-    }
-    .theme-preset.active { border-color: var(--accent); }
-    .theme-preset-swatch {
-      display: flex; gap: 4px; margin-bottom: 8px;
-    }
-    .theme-preset-swatch span {
-      flex: 1; height: 8px; border-radius: 4px;
-    }
-    .theme-preset-name {
-      font-size: 11px; font-weight: 600; font-family: 'Syne', sans-serif;
-    }
-    .theme-preset-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
-    .theme-preset .check {
-      position: absolute; top: 8px; right: 8px;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: var(--accent); color: #000;
-      font-size: 9px; display: none;
-      align-items: center; justify-content: center;
-    }
-    .theme-preset.active .check { display: flex; }
-
-    /* Custom color pickers */
-    .color-pickers { display: flex; flex-direction: column; gap: 10px; }
-    .color-row {
-      display: flex; align-items: center;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 12px; gap: 12px;
-      transition: border-color 0.2s; cursor: pointer;
-    }
-    .color-row:hover { border-color: var(--muted); }
-    .color-preview {
-      width: 28px; height: 28px; border-radius: 8px;
-      border: 2px solid rgba(255,255,255,0.1); flex-shrink: 0;
-      position: relative; overflow: hidden; cursor: pointer;
-    }
-    .color-preview input[type="color"] {
-      position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px);
-      opacity: 0; cursor: pointer; border: none; padding: 0;
-    }
-    .color-row-info { flex: 1; }
-    .color-row-name { font-size: 12px; color: var(--text); font-weight: 500; }
-    .color-row-val { font-size: 10px; color: var(--muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
-
-    /* Dark/Light mode toggle */
-    .mode-toggle { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
-    .mode-btn { flex: 1; padding: 8px; font-size: 11px; font-family: 'DM Mono', monospace; border: none; background: none; color: var(--muted); cursor: pointer; border-radius: 7px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .mode-btn.active { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-
-    /* Reset */
-    .theme-reset {
-      width: 100%; padding: 10px; border-radius: 8px;
-      border: 1px solid var(--border); background: none;
-      color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .theme-reset:hover { border-color: var(--danger); color: var(--danger); }
-
-    /* Live preview stripe */
-    .theme-live-bar {
-      height: 3px; width: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 600px) {
-      .hero h1 { letter-spacing: -1.5px; }
-      .file-card { flex-wrap: wrap; }
-      .format-select { max-width: 100%; width: 100%; }
-      .theme-panel { width: 100%; }
-    }
-  </style>
-</head>
-<body>
-<div class="glow-1"></div>
-<div class="glow-2"></div>
-
-<div class="container">
-  <header>
-    <div class="logo">conver<span>tr</span></div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="badge">100% Local · Grátis</div>
-      <button class="theme-btn" onclick="openTheme()">
-        <span class="theme-btn-dot"></span>
-        Temas
-      </button>
-    </div>
-  </header>
-
-  <section class="hero">
-    <h1>Converta <em>qualquer</em><br>arquivo, agora.</h1>
-    <p>Word, Excel, PowerPoint, PDF, imagens, áudio e dados — tudo convertido direto no navegador, sem upload para servidores.</p>
-
-    <div class="cat-tabs">
-      <span class="cat-tab office"><span class="dot"></span>Word · PDF · PPT</span>
-      <span class="cat-tab spreadsheet"><span class="dot"></span>Excel · CSV</span>
-      <span class="cat-tab image"><span class="dot"></span>Imagens</span>
-      <span class="cat-tab text"><span class="dot"></span>Texto · Dados</span>
-      <span class="cat-tab audio"><span class="dot"></span>Áudio</span>
-    </div>
-
-    <div class="dropzone-wrap" id="dropzone">
-      <div class="drop-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-      </div>
-      <div class="drop-title">Arraste seus arquivos aqui</div>
-      <div class="drop-sub">DOCX · XLSX · PPTX · PDF · PNG · JPG · MP3 · CSV · JSON e mais</div>
-      <button class="btn-browse" onclick="document.getElementById('fileInput').click()">Selecionar Arquivos</button>
-      <input type="file" id="fileInput" multiple
-        accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.txt,.csv,.json,.xml,.html,.md,.png,.jpg,.jpeg,.webp,.gif,.bmp,.svg,.ico,.mp3,.wav,.ogg,.webm,.aac" />
-    </div>
-
-    <div id="fileQueue"></div>
-
-    <div id="convertSection">
-      <button class="btn-convert" id="convertBtn" onclick="convertAll()">⚡ Converter Tudo</button>
-      <div class="convert-note">Todos os arquivos são processados localmente. Nenhum dado é enviado para servidores.</div>
-    </div>
-  </section>
-
-  <section>
-    <div class="how-grid">
-      <div class="how-card">
-        <div class="how-num">01</div>
-        <div class="how-title">Suba seus arquivos</div>
-        <div class="how-desc">Arraste ou clique. Word, Excel, PDF, PPT, imagens, áudio e dados.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-num">02</div>
-        <div class="how-title">Escolha o formato</div>
-        <div class="how-desc">Selecione o formato de saída para cada arquivo individualmente.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-num">03</div>
-        <div class="how-title">Converta e baixe</div>
-        <div class="how-desc">Clique em converter e faça o download. Rápido, seguro, sem servidor.</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="support-section">
-    <div class="section-label">Conversões suportadas</div>
-    <div class="support-grid">
-      <div class="support-card">
-        <div class="support-card-title"><span class="dot" style="background:#4fc3f7"></span>Documentos</div>
-        <div class="support-rows">
-          <div class="support-row"><span class="support-from">DOCX / DOC</span><span class="support-arrow">→</span><span class="support-to">TXT, HTML, PDF</span></div>
-          <div class="support-row"><span class="support-from">PPTX</span><span class="support-arrow">→</span><span class="support-to">TXT, JSON</span></div>
-          <div class="support-row"><span class="support-from">PDF</span><span class="support-arrow">→</span><span class="support-to">TXT</span></div>
-          <div class="support-row"><span class="support-from">TXT / MD</span><span class="support-arrow">→</span><span class="support-to">PDF, HTML</span></div>
+            <!-- ══ SUPPORT GRID ══ -->
+            <section class="support-section">
+                <div class="section-label">Conversões suportadas</div>
+                <div class="support-grid">
+                    <div class="sup-card" style="--c1: #67e8f9">
+                        <div class="sup-card-head">
+                            <span
+                                class="sup-dot"
+                                style="background: #67e8f9"
+                            ></span
+                            >Documentos
+                        </div>
+                        <div class="sup-rows">
+                            <div class="sup-row">
+                                <span class="sup-from">DOCX/DOC</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">TXT, HTML, PDF</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">PPTX</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">TXT, JSON</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">PDF</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">TXT</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sup-card" style="--c1: #6ee7b7">
+                        <div class="sup-card-head">
+                            <span
+                                class="sup-dot"
+                                style="background: #6ee7b7"
+                            ></span
+                            >Planilhas
+                        </div>
+                        <div class="sup-rows">
+                            <div class="sup-row">
+                                <span class="sup-from">XLSX/XLS</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">CSV, JSON, HTML</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">CSV</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">XLSX, JSON, HTML</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">JSON</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">CSV, XLSX, XML</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sup-card" style="--c1: #86efac">
+                        <div class="sup-card-head">
+                            <span
+                                class="sup-dot"
+                                style="background: #86efac"
+                            ></span
+                            >Imagens
+                        </div>
+                        <div class="sup-rows">
+                            <div class="sup-row">
+                                <span class="sup-from">PNG/JPG</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">WEBP, BMP, ICO</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">WEBP/GIF</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">PNG, JPG</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">SVG/BMP</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">PNG, JPG</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sup-card" style="--c1: #d8b4fe">
+                        <div class="sup-card-head">
+                            <span
+                                class="sup-dot"
+                                style="background: #d8b4fe"
+                            ></span
+                            >Áudio
+                        </div>
+                        <div class="sup-rows">
+                            <div class="sup-row">
+                                <span class="sup-from">MP3/WAV</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">OGG, WEBM</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">OGG/AAC</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">WEBM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-      </div>
-      <div class="support-card">
-        <div class="support-card-title"><span class="dot" style="background:#57ffb8"></span>Planilhas</div>
-        <div class="support-rows">
-          <div class="support-row"><span class="support-from">XLSX / XLS</span><span class="support-arrow">→</span><span class="support-to">CSV, JSON, HTML</span></div>
-          <div class="support-row"><span class="support-from">CSV</span><span class="support-arrow">→</span><span class="support-to">XLSX, JSON, HTML</span></div>
-          <div class="support-row"><span class="support-from">JSON</span><span class="support-arrow">→</span><span class="support-to">CSV, XLSX, XML</span></div>
+        <!-- /wrap -->
+
+        <!-- ══ THEME PANEL ══ -->
+        <div class="overlay" id="overlay" onclick="handleOverlay(event)">
+            <div class="theme-panel" onclick="event.stopPropagation()">
+                <div class="tp-live-bar"></div>
+                <div class="tp-header">
+                    <div class="tp-title">TEMAS</div>
+                    <button class="tp-close" onclick="closeTheme()">
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                        >
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="tp-body">
+                    <div>
+                        <div class="tp-sl">Modo</div>
+                        <div class="mode-row">
+                            <button
+                                class="mode-b active"
+                                id="modeDark"
+                                onclick="setMode('dark')"
+                            >
+                                🌙 Escuro
+                            </button>
+                            <button
+                                class="mode-b"
+                                id="modeLight"
+                                onclick="setMode('light')"
+                            >
+                                ☀️ Claro
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="tp-sl">Temas prontos</div>
+                        <div class="presets" id="presetGrid"></div>
+                    </div>
+                    <div>
+                        <div class="tp-sl">Cores personalizadas</div>
+                        <div class="color-pickers">
+                            <div
+                                class="cr"
+                                onclick="this.querySelector('input').click()"
+                            >
+                                <div class="cprev" id="prev-accent">
+                                    <input
+                                        type="color"
+                                        id="pick-accent"
+                                        oninput="
+                                            applyCustomColor(
+                                                'accent',
+                                                this.value,
+                                            )
+                                        "
+                                    />
+                                </div>
+                                <div class="cr-info">
+                                    <div class="cr-name">Cor Principal</div>
+                                    <div class="cr-val" id="val-accent">
+                                        #bf00ff
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="cr"
+                                onclick="this.querySelector('input').click()"
+                            >
+                                <div class="cprev" id="prev-bg">
+                                    <input
+                                        type="color"
+                                        id="pick-bg"
+                                        oninput="
+                                            applyCustomColor('bg', this.value)
+                                        "
+                                    />
+                                </div>
+                                <div class="cr-info">
+                                    <div class="cr-name">Fundo</div>
+                                    <div class="cr-val" id="val-bg">
+                                        #0a0010
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="cr"
+                                onclick="this.querySelector('input').click()"
+                            >
+                                <div class="cprev" id="prev-text">
+                                    <input
+                                        type="color"
+                                        id="pick-text"
+                                        oninput="
+                                            applyCustomColor('text', this.value)
+                                        "
+                                    />
+                                </div>
+                                <div class="cr-info">
+                                    <div class="cr-name">Texto</div>
+                                    <div class="cr-val" id="val-text">
+                                        #f8f5ff
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-reset" onclick="resetTheme()">
+                        ↺ Restaurar padrão
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="support-card">
-        <div class="support-card-title"><span class="dot" style="background:#c8ff57"></span>Imagens</div>
-        <div class="support-rows">
-          <div class="support-row"><span class="support-from">PNG / JPG</span><span class="support-arrow">→</span><span class="support-to">WEBP, BMP, ICO</span></div>
-          <div class="support-row"><span class="support-from">WEBP / GIF</span><span class="support-arrow">→</span><span class="support-to">PNG, JPG, BMP</span></div>
-          <div class="support-row"><span class="support-from">SVG / ICO</span><span class="support-arrow">→</span><span class="support-to">PNG</span></div>
-        </div>
-      </div>
-      <div class="support-card">
-        <div class="support-card-title"><span class="dot" style="background:#cf87ff"></span>Áudio</div>
-        <div class="support-rows">
-          <div class="support-row"><span class="support-from">MP3 / WAV</span><span class="support-arrow">→</span><span class="support-to">OGG, WEBM</span></div>
-          <div class="support-row"><span class="support-from">OGG / AAC</span><span class="support-arrow">→</span><span class="support-to">WEBM</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
 
-<div id="themeOverlay" class="theme-overlay" onclick="handleOverlayClick(event)">
-  <div class="theme-panel" onclick="event.stopPropagation()">
-    <div class="theme-live-bar"></div>
-    <div class="theme-panel-header">
-      <div class="theme-panel-title">🎨 Personalizar</div>
-      <button class="theme-close" onclick="closeTheme()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
+        <div id="toast"></div>
 
-    <div class="theme-panel-body">
-
-      <!-- Mode -->
-      <div>
-        <div class="theme-section-label">Modo</div>
-        <div class="mode-toggle">
-          <button class="mode-btn active" id="modeDark" onclick="setMode('dark')">🌙 Escuro</button>
-          <button class="mode-btn" id="modeLight" onclick="setMode('light')">☀️ Claro</button>
-        </div>
-      </div>
-
-      <!-- Presets -->
-      <div>
-        <div class="theme-section-label">Temas Prontos</div>
-        <div class="theme-presets" id="presetGrid"></div>
-      </div>
-
-      <!-- Custom Colors -->
-      <div>
-        <div class="theme-section-label">Cores Personalizadas</div>
-        <div class="color-pickers">
-          <div class="color-row" onclick="this.querySelector('input').click()">
-            <div class="color-preview" id="prev-accent">
-              <input type="color" id="pick-accent" oninput="applyCustomColor('accent',this.value)" />
+        <footer>
+            <div class="wrap">
+                <strong>VLTX</strong> — Conversão local e privada.<br />
+                Nenhum arquivo é enviado a servidores externos.
             </div>
-            <div class="color-row-info">
-              <div class="color-row-name">Cor de Destaque</div>
-              <div class="color-row-val" id="val-accent">#c8ff57</div>
-            </div>
-          </div>
-          <div class="color-row" onclick="this.querySelector('input').click()">
-            <div class="color-preview" id="prev-accent2">
-              <input type="color" id="pick-accent2" oninput="applyCustomColor('accent2',this.value)" />
-            </div>
-            <div class="color-row-info">
-              <div class="color-row-name">Cor Secundária</div>
-              <div class="color-row-val" id="val-accent2">#57d4ff</div>
-            </div>
-          </div>
-          <div class="color-row" onclick="this.querySelector('input').click()">
-            <div class="color-preview" id="prev-bg">
-              <input type="color" id="pick-bg" oninput="applyCustomColor('bg',this.value)" />
-            </div>
-            <div class="color-row-info">
-              <div class="color-row-name">Fundo</div>
-              <div class="color-row-val" id="val-bg">#0a0a0f</div>
-            </div>
-          </div>
-          <div class="color-row" onclick="this.querySelector('input').click()">
-            <div class="color-preview" id="prev-surface">
-              <input type="color" id="pick-surface" oninput="applyCustomColor('surface',this.value)" />
-            </div>
-            <div class="color-row-info">
-              <div class="color-row-name">Superfície dos Cards</div>
-              <div class="color-row-val" id="val-surface">#111118</div>
-            </div>
-          </div>
-          <div class="color-row" onclick="this.querySelector('input').click()">
-            <div class="color-preview" id="prev-text">
-              <input type="color" id="pick-text" oninput="applyCustomColor('text',this.value)" />
-            </div>
-            <div class="color-row-info">
-              <div class="color-row-name">Texto Principal</div>
-              <div class="color-row-val" id="val-text">#f0f0f5</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Reset -->
-      <button class="theme-reset" onclick="resetTheme()">↺ Restaurar padrão</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<footer>
-  <div class="container">
-    <strong>Convertr</strong> — Conversão de arquivos local e privada.<br>
-    Nenhum dado é enviado para servidores externos.
-  </div>
-</footer>
-
-<script>
-// ─── Conversion Map ──────────────────────────────────────────────────────────
-const CONVERSIONS = {
-  // Office / Documents
-  docx: ['txt', 'html', 'pdf'],
-  doc:  ['txt', 'html'],
-  pptx: ['txt', 'json'],
-  ppt:  ['txt'],
-  pdf:  ['txt'],
-  // Spreadsheets
-  xlsx: ['csv', 'json', 'html'],
-  xls:  ['csv', 'json', 'html'],
-  csv:  ['xlsx', 'json', 'html'],
-  // Text/Data
-  json: ['csv', 'xlsx', 'xml', 'txt'],
-  xml:  ['json', 'txt'],
-  txt:  ['pdf', 'html'],
-  html: ['txt', 'pdf'],
-  md:   ['html', 'txt', 'pdf'],
-  // Images
-  png:  ['jpg','webp','gif','bmp','ico'],
-  jpg:  ['png','webp','gif','bmp','ico'],
-  jpeg: ['png','webp','gif','bmp','ico'],
-  webp: ['png','jpg','bmp','ico'],
-  gif:  ['png','jpg','webp'],
-  bmp:  ['png','jpg','webp'],
-  svg:  ['png'],
-  ico:  ['png'],
-  // Audio
-  mp3:  ['ogg','webm'],
-  wav:  ['ogg','webm'],
-  ogg:  ['webm'],
-  aac:  ['webm'],
-  webm: ['ogg'],
-};
-
-const CATEGORY_MAP = {
-  docx:'office', doc:'office', pptx:'office', ppt:'office', pdf:'office',
-  xlsx:'spreadsheet', xls:'spreadsheet', csv:'spreadsheet',
-  json:'text', xml:'text', txt:'text', html:'text', md:'text',
-  png:'image', jpg:'image', jpeg:'image', webp:'image', gif:'image',
-  bmp:'image', svg:'image', ico:'image',
-  mp3:'audio', wav:'audio', ogg:'audio', aac:'audio', webm:'audio',
-};
-
-// ─── State ───────────────────────────────────────────────────────────────────
-let files = [];
-
-// ─── Drop Zone ───────────────────────────────────────────────────────────────
-const dz = document.getElementById('dropzone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); handleFiles([...e.dataTransfer.files]); });
-document.getElementById('fileInput').addEventListener('change', e => handleFiles([...e.target.files]));
-
-function handleFiles(newFiles) {
-  newFiles.forEach(f => {
-    if (files.find(x => x.file.name === f.name && x.file.size === f.size)) return;
-    const ext = getExt(f);
-    const targets = CONVERSIONS[ext] || [];
-    files.push({ file: f, ext, targets, selected: targets[0] || null });
-  });
-  renderQueue();
-}
-
-function getExt(file) { return file.name.split('.').pop().toLowerCase(); }
-
-function renderQueue() {
-  const q = document.getElementById('fileQueue');
-  q.innerHTML = '';
-  files.forEach((item, idx) => {
-    const cat = CATEGORY_MAP[item.ext] || 'unknown';
-    const hasSel = item.targets.length > 0;
-    const card = document.createElement('div');
-    card.className = 'file-card';
-    card.dataset.idx = idx;
-    card.innerHTML = `
-      <span class="file-type-badge cat-${cat}">${item.ext.toUpperCase()}</span>
-      <div class="file-info">
-        <div class="file-name" title="${item.file.name}">${item.file.name}</div>
-        <div class="file-size">${formatSize(item.file.size)}</div>
-        <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
-        <div class="file-status"></div>
-      </div>
-      ${hasSel
-        ? `<select class="format-select" onchange="files[${idx}].selected=this.value">
-            ${item.targets.map(t=>`<option value="${t}">${t.toUpperCase()}</option>`).join('')}
-           </select>`
-        : `<span style="font-size:11px;color:var(--muted)">sem suporte</span>`}
-      <button class="btn-remove" onclick="removeFile(${idx})" title="Remover">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    `;
-    q.appendChild(card);
-  });
-  const sec = document.getElementById('convertSection');
-  sec.style.display = files.length && files.some(f => f.targets.length) ? 'flex' : 'none';
-  document.getElementById('fileInput').value = '';
-}
-
-function removeFile(idx) { files.splice(idx, 1); renderQueue(); }
-
-function formatSize(b) {
-  if (b < 1024) return b + ' B';
-  if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
-  return (b/1048576).toFixed(1) + ' MB';
-}
-
-// ─── Convert All ─────────────────────────────────────────────────────────────
-async function convertAll() {
-  const btn = document.getElementById('convertBtn');
-  btn.disabled = true; btn.textContent = 'Convertendo…';
-  let ok = 0, err = 0;
-
-  for (let idx = 0; idx < files.length; idx++) {
-    const item = files[idx];
-    if (!item.selected) continue;
-    const card = document.querySelector(`.file-card[data-idx="${idx}"]`);
-    if (!card) continue;
-    card.classList.add('converting');
-    card.querySelector('.progress-bar-wrap').style.display = 'block';
-    const iv = animateProgress(card);
-
-    try {
-      await dispatch(item);
-      ok++;
-      clearInterval(iv);
-      card.querySelector('.progress-bar').style.width = '100%';
-      setStatus(card, '✓ Concluído', 'var(--accent)');
-    } catch(e) {
-      err++;
-      clearInterval(iv);
-      console.error(item.file.name, e);
-      setStatus(card, '✗ Erro: ' + (e.message || 'falha'), 'var(--danger)');
-    }
-    card.classList.remove('converting');
-  }
-
-  btn.disabled = false; btn.textContent = '⚡ Converter Tudo';
-  if (ok) showToast(`${ok} arquivo${ok > 1?'s':''} convertido${ok > 1?'s':''}!`, 'success');
-  if (err) showToast(`${err} erro${err > 1?'s':''} durante a conversão.`, 'error');
-}
-
-function setStatus(card, msg, color) {
-  const el = card.querySelector('.file-status');
-  el.textContent = msg; el.style.color = color; el.style.display = 'block';
-}
-
-function animateProgress(card) {
-  const bar = card.querySelector('.progress-bar');
-  let w = 0;
-  return setInterval(() => { w = Math.min(w + Math.random()*14, 85); bar.style.width = w+'%'; }, 160);
-}
-
-// ─── Dispatch ────────────────────────────────────────────────────────────────
-async function dispatch(item) {
-  const cat = CATEGORY_MAP[item.ext];
-  if (cat === 'image')       return convertImage(item);
-  if (cat === 'audio')       return convertAudio(item);
-  if (cat === 'spreadsheet') return convertSpreadsheet(item);
-  if (cat === 'office')      return convertOffice(item);
-  if (cat === 'text')        return convertText(item);
-  throw new Error('Formato não suportado');
-}
-
-// ─── IMAGE ───────────────────────────────────────────────────────────────────
-function convertImage(item) {
-  return new Promise((resolve, reject) => {
-    const { file, selected: target } = item;
-    const img = new Image();
-    img.onload = () => {
-      const c = document.createElement('canvas');
-      c.width = target==='ico' ? 32 : img.naturalWidth;
-      c.height = target==='ico' ? 32 : img.naturalHeight;
-      const ctx = c.getContext('2d');
-      if (target==='jpg'||target==='jpeg') { ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height); }
-      ctx.drawImage(img, 0, 0, c.width, c.height);
-      const mimes = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp', gif:'image/gif', bmp:'image/bmp', ico:'image/png' };
-      c.toBlob(blob => {
-        if (!blob) return reject(new Error('Falha ao gerar imagem'));
-        downloadBlob(blob, changeExt(file.name, target));
-        resolve();
-      }, mimes[target]||'image/png', 0.93);
-    };
-    img.onerror = () => reject(new Error('Imagem inválida'));
-    img.src = URL.createObjectURL(file);
-  });
-}
-
-// ─── AUDIO ───────────────────────────────────────────────────────────────────
-async function convertAudio(item) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const ac = new (window.AudioContext||window.webkitAudioContext)();
-      const ab = await item.file.arrayBuffer();
-      const audioBuffer = await ac.decodeAudioData(ab);
-      const dest = ac.createMediaStreamDestination();
-      const src = ac.createBufferSource();
-      src.buffer = audioBuffer; src.connect(dest);
-      const mimes = ['audio/ogg;codecs=opus','audio/webm;codecs=opus','audio/webm','audio/ogg'];
-      const usedMime = mimes.find(m => MediaRecorder.isTypeSupported(m)) || '';
-      const chunks = [];
-      const rec = new MediaRecorder(dest.stream, usedMime ? {mimeType:usedMime} : {});
-      rec.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
-      rec.onstop = () => {
-        const blob = new Blob(chunks, {type: usedMime||'audio/webm'});
-        const ext = (usedMime.match(/audio\/(\w+)/)||['','webm'])[1];
-        downloadBlob(blob, changeExt(item.file.name, ext));
-        ac.close(); resolve();
-      };
-      rec.start(); src.start(0);
-      src.onended = () => setTimeout(()=>rec.stop(), 100);
-    } catch(e) { reject(e); }
-  });
-}
-
-// ─── SPREADSHEET ─────────────────────────────────────────────────────────────
-async function convertSpreadsheet(item) {
-  const { file, ext, selected: target } = item;
-  let wb;
-
-  if (ext==='xlsx'||ext==='xls') {
-    wb = XLSX.read(await file.arrayBuffer(), {type:'array'});
-  } else if (ext==='csv') {
-    wb = XLSX.read(await file.text(), {type:'string'});
-  }
-  if (!wb) throw new Error('Não foi possível ler a planilha');
-
-  const sheet = wb.Sheets[wb.SheetNames[0]];
-
-  if (target==='xlsx') {
-    const out = XLSX.write(wb, {bookType:'xlsx', type:'array'});
-    downloadBlob(new Blob([out], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}), changeExt(file.name,'xlsx'));
-  } else if (target==='csv') {
-    downloadBlob(new Blob([XLSX.utils.sheet_to_csv(sheet)], {type:'text/csv;charset=utf-8'}), changeExt(file.name,'csv'));
-  } else if (target==='json') {
-    downloadBlob(new Blob([JSON.stringify(XLSX.utils.sheet_to_json(sheet), null, 2)], {type:'application/json'}), changeExt(file.name,'json'));
-  } else if (target==='html') {
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;padding:20px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ddd;padding:8px 12px;text-align:left}th{background:#f5f5f5;font-weight:600}tr:nth-child(even){background:#fafafa}</style></head><body>${XLSX.utils.sheet_to_html(sheet)}</body></html>`;
-    downloadBlob(new Blob([html], {type:'text/html;charset=utf-8'}), changeExt(file.name,'html'));
-  }
-}
-
-// ─── OFFICE DOCUMENTS ────────────────────────────────────────────────────────
-async function convertOffice(item) {
-  const { file, ext, selected: target } = item;
-
-  if (ext==='docx'||ext==='doc') {
-    if (typeof mammoth === 'undefined') throw new Error('Biblioteca mammoth não carregada');
-    const ab = await file.arrayBuffer();
-    const result = await mammoth.convertToHtml({arrayBuffer: ab});
-    const html = result.value;
-    const text = htmlToPlainText(html);
-
-    if (target==='html') {
-      const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;line-height:1.8;color:#1a1a1a;padding:0 20px}h1,h2,h3{color:#111;margin:1.5em 0 0.5em}p{margin:0 0 1em}table{border-collapse:collapse;width:100%;margin:1em 0}td,th{border:1px solid #ccc;padding:8px}img{max-width:100%}</style></head><body>${html}</body></html>`;
-      downloadBlob(new Blob([full], {type:'text/html;charset=utf-8'}), changeExt(file.name,'html'));
-    } else if (target==='txt') {
-      downloadBlob(new Blob([text], {type:'text/plain;charset=utf-8'}), changeExt(file.name,'txt'));
-    } else if (target==='pdf') {
-      await textToPdf(text, changeExt(file.name,'pdf'));
-    }
-    return;
-  }
-
-  if (ext==='pptx'||ext==='ppt') {
-    if (typeof JSZip === 'undefined') throw new Error('Biblioteca JSZip não carregada');
-    const ab = await file.arrayBuffer();
-    const zip = await JSZip.loadAsync(ab);
-    const slideFiles = Object.keys(zip.files)
-      .filter(f => /^ppt\/slides\/slide\d+\.xml$/.test(f))
-      .sort((a,b) => {
-        const na = parseInt(a.match(/\d+/)[0]);
-        const nb = parseInt(b.match(/\d+/)[0]);
-        return na - nb;
-      });
-
-    const slides = [];
-    for (const sf of slideFiles) {
-      const xml = await zip.files[sf].async('string');
-      const doc = new DOMParser().parseFromString(xml, 'text/xml');
-      const texts = [...doc.querySelectorAll('a\\:t, t')].map(n => n.textContent.trim()).filter(Boolean);
-      slides.push(texts.join(' '));
-    }
-
-    if (target==='txt') {
-      const out = slides.map((s,i)=>`=== Slide ${i+1} ===\n${s}`).join('\n\n');
-      downloadBlob(new Blob([out], {type:'text/plain;charset=utf-8'}), changeExt(file.name,'txt'));
-    } else if (target==='json') {
-      downloadBlob(new Blob([JSON.stringify(slides.map((text,i)=>({slide:i+1,text})), null, 2)], {type:'application/json'}), changeExt(file.name,'json'));
-    }
-    return;
-  }
-
-  if (ext==='pdf') {
-    const text = await extractPdfText(file);
-    downloadBlob(new Blob([text], {type:'text/plain;charset=utf-8'}), changeExt(file.name,'txt'));
-    return;
-  }
-
-  throw new Error('Conversão não disponível');
-}
-
-// ─── TEXT / DATA ──────────────────────────────────────────────────────────────
-async function convertText(item) {
-  const { file, ext, selected: target } = item;
-  const text = await file.text();
-  let srcData = null;
-  try {
-    if (ext==='json') srcData = JSON.parse(text);
-    else if (ext==='csv') srcData = parseCSV(text);
-    else if (ext==='xml') srcData = xmlToObject(text);
-  } catch(e) {}
-
-  if (target==='txt') {
-    const plain = (ext==='html') ? htmlToPlainText(text) : text;
-    downloadBlob(new Blob([plain], {type:'text/plain;charset=utf-8'}), changeExt(file.name,'txt'));
-
-  } else if (target==='html') {
-    let body;
-    if (ext==='md') body = mdToHtml(text);
-    else body = `<pre style="font-family:monospace;white-space:pre-wrap;line-height:1.6">${escXml(text)}</pre>`;
-    const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;max-width:800px;margin:40px auto;line-height:1.7;padding:0 20px}h1,h2,h3{margin:1.5em 0 .5em}p{margin:0 0 1em}</style></head><body>${body}</body></html>`;
-    downloadBlob(new Blob([full], {type:'text/html;charset=utf-8'}), changeExt(file.name,'html'));
-
-  } else if (target==='pdf') {
-    const plain = (ext==='html') ? htmlToPlainText(text) : text;
-    await textToPdf(plain, changeExt(file.name,'pdf'));
-
-  } else if (target==='json') {
-    let out;
-    if (srcData) out = JSON.stringify(srcData, null, 2);
-    else out = JSON.stringify({content: text}, null, 2);
-    downloadBlob(new Blob([out], {type:'application/json'}), changeExt(file.name,'json'));
-
-  } else if (target==='csv') {
-    if (ext==='json' && srcData) {
-      downloadBlob(new Blob([jsonToCSV(Array.isArray(srcData)?srcData:[srcData])], {type:'text/csv;charset=utf-8'}), changeExt(file.name,'csv'));
-    } else {
-      downloadBlob(new Blob([text], {type:'text/csv'}), changeExt(file.name,'csv'));
-    }
-
-  } else if (target==='xlsx') {
-    let data;
-    if (ext==='json' && srcData) data = Array.isArray(srcData)?srcData:[srcData];
-    else if (ext==='csv' && srcData) data = srcData;
-    else data = [{content: text}];
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Dados');
-    const out = XLSX.write(wb, {bookType:'xlsx', type:'array'});
-    downloadBlob(new Blob([out], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}), changeExt(file.name,'xlsx'));
-
-  } else if (target==='xml') {
-    let xml;
-    if (ext==='json' && srcData) xml = `<?xml version="1.0" encoding="UTF-8"?>\n${jsonToXML(srcData)}`;
-    else xml = `<?xml version="1.0" encoding="UTF-8"?>\n<root><content>${escXml(text)}</content></root>`;
-    downloadBlob(new Blob([xml], {type:'application/xml;charset=utf-8'}), changeExt(file.name,'xml'));
-  }
-}
-
-// ─── PDF Generation via jsPDF ─────────────────────────────────────────────────
-async function textToPdf(text, filename) {
-  if (typeof window.jspdf === 'undefined') throw new Error('Biblioteca jsPDF não carregada');
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({orientation:'p', unit:'mm', format:'a4'});
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  const margin = 15;
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(11);
-  const lines = doc.splitTextToSize(text, pageW - margin*2);
-  let y = margin + 5;
-  for (const line of lines) {
-    if (y > pageH - margin) { doc.addPage(); y = margin + 5; }
-    doc.text(line, margin, y);
-    y += 6;
-  }
-  doc.save(filename);
-}
-
-// ─── PDF text extraction (raw byte parsing) ───────────────────────────────────
-async function extractPdfText(file) {
-  const ab = await file.arrayBuffer();
-  const str = new TextDecoder('latin1').decode(new Uint8Array(ab));
-  let text = '';
-  for (const m of str.matchAll(/BT([\s\S]*?)ET/g)) {
-    const block = m[1];
-    for (const s of [...block.matchAll(/\(([^)]*)\)\s*Tj/g)]) {
-      text += s[1].replace(/\\n/g,'\n').replace(/\\r/g,'').replace(/\\\\/g,'\\') + ' ';
-    }
-    text += '\n';
-  }
-  text = text.trim();
-  if (!text) text = '[Não foi possível extrair texto deste PDF.\nPDFs baseados em imagem/escaneados não são suportados nesta conversão básica.]';
-  return text;
-}
-
-// ─── Parsers / Formatters ─────────────────────────────────────────────────────
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
-  return lines.slice(1).map(line => {
-    const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g,''));
-    const obj = {}; headers.forEach((h,i) => obj[h] = vals[i]||''); return obj;
-  });
-}
-
-function jsonToCSV(arr) {
-  if (!arr.length) return '';
-  const headers = Object.keys(arr[0]);
-  return [headers.join(','), ...arr.map(r => headers.map(h => JSON.stringify(r[h]??'')).join(','))].join('\n');
-}
-
-function escXml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function jsonToXML(obj, tag='root') {
-  if (Array.isArray(obj)) return `<${tag}>${obj.map(o=>jsonToXML(o,'item')).join('')}</${tag}>`;
-  if (obj && typeof obj==='object') {
-    const inner = Object.entries(obj).map(([k,v])=>jsonToXML(v,k.replace(/\s+/g,'_'))).join('');
-    return `<${tag}>${inner}</${tag}>`;
-  }
-  return `<${tag}>${escXml(obj)}</${tag}>`;
-}
-
-function xmlToObject(xml) {
-  const doc = new DOMParser().parseFromString(xml,'text/xml');
-  return nodeToObj(doc.documentElement);
-}
-function nodeToObj(node) {
-  if (node.childNodes.length===1 && node.childNodes[0].nodeType===3) return node.childNodes[0].nodeValue;
-  const obj={};
-  for (const c of node.childNodes) {
-    if (c.nodeType!==1) continue;
-    const v = nodeToObj(c);
-    if (obj[c.tagName]) { if(!Array.isArray(obj[c.tagName])) obj[c.tagName]=[obj[c.tagName]]; obj[c.tagName].push(v); }
-    else obj[c.tagName]=v;
-  }
-  return obj;
-}
-
-function htmlToPlainText(html) {
-  const d = document.createElement('div');
-  d.innerHTML = html;
-  return (d.innerText||d.textContent||'').trim();
-}
-
-function mdToHtml(md) {
-  return md
-    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
-    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
-    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/`(.+?)`/g,'<code>$1</code>')
-    .replace(/\n\n/g,'</p><p>')
-    .replace(/\n/g,'<br>');
-}
-
-function changeExt(name, newExt) { return name.replace(/\.[^.]+$/, '') + '.' + newExt; }
-
-function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url), 5000);
-}
-
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'show ' + type;
-  setTimeout(()=>t.className='', 3800);
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// THEME SYSTEM
-// ═══════════════════════════════════════════════════════════════════
-
-const PRESETS = [
-  {
-    id: 'default', name: 'Neon Verde', sub: 'Padrão',
-    accent: '#c8ff57', accent2: '#57d4ff',
-    dark:  { bg: '#0a0a0f', surface: '#111118', surface2: '#18181f', text: '#f0f0f5', muted: '#6b6b80', border: 'rgba(255,255,255,0.07)' },
-    light: { bg: '#f4f7f0', surface: '#ffffff', surface2: '#eef2e8', text: '#111118', muted: '#7a7a8a', border: 'rgba(0,0,0,0.08)' },
-  },
-  {
-    id: 'purple', name: 'Roxo Cósmico', sub: 'Galáxia',
-    accent: '#c87fff', accent2: '#ff57d4',
-    dark:  { bg: '#0d0a14', surface: '#15101e', surface2: '#1c1428', text: '#f0eeff', muted: '#7a6b8a', border: 'rgba(200,127,255,0.08)' },
-    light: { bg: '#f5f0ff', surface: '#ffffff', surface2: '#ede5ff', text: '#1a0d2e', muted: '#7a6b8a', border: 'rgba(0,0,0,0.08)' },
-  },
-  {
-    id: 'amber', name: 'Âmbar Solar', sub: 'Quente',
-    accent: '#ffb347', accent2: '#ff6f47',
-    dark:  { bg: '#0f0c07', surface: '#191208', surface2: '#22180a', text: '#fff5e0', muted: '#8a7a5a', border: 'rgba(255,179,71,0.08)' },
-    light: { bg: '#fff8ee', surface: '#ffffff', surface2: '#fff0d4', text: '#1a1000', muted: '#8a7a5a', border: 'rgba(0,0,0,0.08)' },
-  },
-  {
-    id: 'cyan', name: 'Ciano Gelo', sub: 'Frio',
-    accent: '#57fff4', accent2: '#57b4ff',
-    dark:  { bg: '#060f12', surface: '#0c1a1e', surface2: '#112228', text: '#e0faff', muted: '#5a7a80', border: 'rgba(87,255,244,0.07)' },
-    light: { bg: '#edfffe', surface: '#ffffff', surface2: '#d4fafe', text: '#041518', muted: '#5a7a80', border: 'rgba(0,0,0,0.08)' },
-  },
-  {
-    id: 'rose', name: 'Rosa Neon', sub: 'Vibrante',
-    accent: '#ff57a8', accent2: '#ff8c57',
-    dark:  { bg: '#120a0d', surface: '#1e1015', surface2: '#28141c', text: '#ffe0ee', muted: '#8a5a6b', border: 'rgba(255,87,168,0.08)' },
-    light: { bg: '#fff0f5', surface: '#ffffff', surface2: '#ffd4e5', text: '#200010', muted: '#8a5a6b', border: 'rgba(0,0,0,0.08)' },
-  },
-  {
-    id: 'mono', name: 'Monocromático', sub: 'Minimalista',
-    accent: '#e0e0e0', accent2: '#a0a0a0',
-    dark:  { bg: '#080808', surface: '#111111', surface2: '#1a1a1a', text: '#f0f0f0', muted: '#666666', border: 'rgba(255,255,255,0.07)' },
-    light: { bg: '#f5f5f5', surface: '#ffffff', surface2: '#ebebeb', text: '#111111', muted: '#888888', border: 'rgba(0,0,0,0.08)' },
-  },
-];
-
-let currentTheme = { presetId: 'default', mode: 'dark', custom: {} };
-
-function openTheme()  { document.getElementById('themeOverlay').classList.add('open'); }
-function closeTheme() { document.getElementById('themeOverlay').classList.remove('open'); }
-function handleOverlayClick(e) { if (e.target === document.getElementById('themeOverlay')) closeTheme(); }
-
-function buildPresetGrid() {
-  const grid = document.getElementById('presetGrid');
-  grid.innerHTML = '';
-  PRESETS.forEach(p => {
-    const el = document.createElement('div');
-    el.className = 'theme-preset' + (currentTheme.presetId === p.id ? ' active' : '');
-    el.dataset.id = p.id;
-    el.style.background = currentTheme.mode === 'dark' ? p.dark.surface : p.light.surface;
-    el.style.border = `2px solid ${currentTheme.presetId === p.id ? p.accent : 'transparent'}`;
-    el.innerHTML = `
-      <div class="theme-preset-swatch">
-        <span style="background:${p.accent}"></span>
-        <span style="background:${p.accent2}"></span>
-        <span style="background:${currentTheme.mode==='dark'?p.dark.bg:p.light.bg}"></span>
-      </div>
-      <div class="theme-preset-name" style="color:${currentTheme.mode==='dark'?p.dark.text:p.light.text}">${p.name}</div>
-      <div class="theme-preset-sub">${p.sub}</div>
-      <div class="check">✓</div>
-    `;
-    el.onclick = () => applyPreset(p.id);
-    grid.appendChild(el);
-  });
-}
-
-function applyPreset(id) {
-  currentTheme.presetId = id;
-  currentTheme.custom = {};
-  applyCurrentTheme();
-  buildPresetGrid();
-  saveTheme();
-}
-
-function setMode(mode) {
-  currentTheme.mode = mode;
-  document.getElementById('modeDark').classList.toggle('active', mode==='dark');
-  document.getElementById('modeLight').classList.toggle('active', mode==='light');
-  applyCurrentTheme();
-  buildPresetGrid();
-  saveTheme();
-}
-
-function applyCurrentTheme() {
-  const preset = PRESETS.find(p => p.id === currentTheme.presetId) || PRESETS[0];
-  const base = currentTheme.mode === 'dark' ? preset.dark : preset.light;
-  const accent  = currentTheme.custom.accent   || preset.accent;
-  const accent2 = currentTheme.custom.accent2  || preset.accent2;
-  const bg      = currentTheme.custom.bg       || base.bg;
-  const surface = currentTheme.custom.surface  || base.surface;
-  const text    = currentTheme.custom.text     || base.text;
-
-  // Determine button text contrast (dark text on light accent, light text on dark accent)
-  const btnText = isLightColor(accent) ? '#0a0a0f' : '#f0f0f5';
-
-  // Build accent shadow & subtle from accent color
-  const r = hexToRgb(accent);
-  const accentShadow  = r ? `rgba(${r.r},${r.g},${r.b},0.30)` : 'rgba(200,255,87,0.30)';
-  const accentSubtle  = r ? `rgba(${r.r},${r.g},${r.b},0.10)` : 'rgba(200,255,87,0.10)';
-  const accentGlow    = r ? `rgba(${r.r},${r.g},${r.b},0.04)` : 'rgba(200,255,87,0.04)';
-
-  const vars = {
-    '--accent':        accent,
-    '--accent2':       accent2,
-    '--bg':            bg,
-    '--surface':       surface,
-    '--surface2':      base.surface2,
-    '--text':          text,
-    '--muted':         base.muted,
-    '--border':        base.border,
-    '--btn-text':      btnText,
-    '--accent-shadow': accentShadow,
-    '--accent-subtle': accentSubtle,
-    '--accent-glow':   accentGlow,
-  };
-  const root = document.documentElement;
-  for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
-
-  // Update glow blobs
-  const r2 = hexToRgb(accent2);
-  document.querySelector('.glow-1').style.background = r
-    ? `radial-gradient(circle, rgba(${r.r},${r.g},${r.b},0.07) 0%, transparent 70%)` : '';
-  document.querySelector('.glow-2').style.background = r2
-    ? `radial-gradient(circle, rgba(${r2.r},${r2.g},${r2.b},0.06) 0%, transparent 70%)` : '';
-
-  // Update color pickers UI
-  updatePickerUI('accent',  accent);
-  updatePickerUI('accent2', accent2);
-  updatePickerUI('bg',      bg);
-  updatePickerUI('surface', surface);
-  updatePickerUI('text',    text);
-}
-
-function applyCustomColor(key, value) {
-  currentTheme.custom[key] = value;
-  currentTheme.presetId = 'custom';
-  document.querySelectorAll('.theme-preset').forEach(el => el.classList.remove('active'));
-  // Re-apply full theme so all derived vars update correctly
-  applyCurrentTheme();
-  saveTheme();
-}
-
-function updatePickerUI(key, value) {
-  const prev = document.getElementById('prev-' + key);
-  const pick = document.getElementById('pick-' + key);
-  const val  = document.getElementById('val-' + key);
-  if (!prev) return;
-  prev.style.background = value;
-  if (pick && isValidHex(value)) pick.value = value;
-  if (val) val.textContent = value;
-}
-
-function resetTheme() {
-  currentTheme = { presetId: 'default', mode: 'dark', custom: {} };
-  setMode('dark');
-  applyCurrentTheme();
-  buildPresetGrid();
-  saveTheme();
-  showToast('Tema restaurado!', 'success');
-}
-
-function saveTheme() {
-  try { localStorage.setItem('convertr_theme', JSON.stringify(currentTheme)); } catch(e) {}
-}
-
-function loadTheme() {
-  try {
-    const saved = localStorage.getItem('convertr_theme');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      currentTheme = { ...currentTheme, ...parsed };
-      if (currentTheme.mode === 'light') setMode('light');
-    }
-  } catch(e) {}
-  applyCurrentTheme();
-  buildPresetGrid();
-}
-
-function hexToRgb(hex) {
-  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return r ? { r: parseInt(r[1],16), g: parseInt(r[2],16), b: parseInt(r[3],16) } : null;
-}
-
-function isLightColor(hex) {
-  const c = hexToRgb(hex);
-  if (!c) return false;
-  // Perceived luminance
-  const lum = (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) / 255;
-  return lum > 0.55;
-}
-
-function isValidHex(h) { return /^#[0-9a-f]{6}$/i.test(h); }
-
-// Init theme on load
-loadTheme();
-</script>
-</body>
+        </footer>
+
+        <!-- App scripts (order matters) -->
+        <script src="theme.js?v=3"></script>
+        <script src="converter.js?v=3"></script>
+    </body>
 </html>
