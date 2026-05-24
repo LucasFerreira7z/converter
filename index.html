@@ -3,14 +3,16 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>LK — File Converter</title>
+        <title>LK — File & YouTube Converter</title>
+        <link rel="icon" type="image/x-icon" href="icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
             href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="style.css?v=3" />
-        <link rel="stylesheet" href="theme.css?v=3" />
+        <link rel="stylesheet" href="style.css?v=4" />
+        <link rel="stylesheet" href="youtube.css?v=4" />
+        <link rel="stylesheet" href="theme.css?v=4" />
         <!-- Conversion libraries -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -26,7 +28,7 @@
             <header>
                 <div>
                     <div class="logo">LK</div>
-                    <div class="logo-sub">File Converter</div>
+                    <div class="logo-sub">File & YouTube Converter</div>
                 </div>
                 <div class="header-right">
                     <div class="pill-badge">100% Local</div>
@@ -44,13 +46,54 @@
                     <span class="line2">QUALQUER COISA</span>
                 </h1>
                 <p class="hero-desc">
-                    Arquivos, documentos, imagens, áudio e dados — tudo
-                    convertido direto no navegador. Nenhum dado enviado a
+                    Arquivos, documentos, imagens, áudio e vídeos do YouTube —
+                    tudo convertido direto no navegador. Nenhum dado enviado a
                     servidores.
                 </p>
 
-                <!-- ── FILES ── -->
-                <div>
+                <!-- ── TABS ── -->
+                <div class="main-tabs">
+                    <button
+                        class="tab-btn active"
+                        id="tab-btn-files"
+                        onclick="switchTab('files', this)"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        Arquivos
+                    </button>
+                    <button
+                        class="tab-btn"
+                        id="tab-btn-youtube"
+                        onclick="switchTab('youtube', this)"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            width="16"
+                            height="16"
+                        >
+                            <path
+                                d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.4 2.8 12 2.8 12 2.8s-4.4 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.5 21.5 12 21.5 12 21.5s4.4 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"
+                            />
+                        </svg>
+                        YouTube
+                    </button>
+                </div>
+
+                <!-- ── FILES TAB ── -->
+                <div class="tab-panel active" id="tab-files">
                     <div class="dropzone" id="dropzone">
                         <div class="dz-icon">
                             <svg
@@ -135,6 +178,318 @@
                         </div>
                     </div>
                 </div>
+                <!-- /tab-files -->
+
+                <!-- ── YOUTUBE TAB ── -->
+                <div class="tab-panel" id="tab-youtube">
+                    <div class="yt-card">
+                        <!-- Header -->
+                        <div class="yt-card-header">
+                            <div class="yt-card-icon">
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="white"
+                                    width="26"
+                                    height="26"
+                                >
+                                    <path
+                                        d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.4 2.8 12 2.8 12 2.8s-4.4 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.5 21.5 12 21.5 12 21.5s4.4 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"
+                                    />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="yt-card-title">
+                                    YouTube Downloader
+                                </div>
+                                <div class="yt-card-sub">
+                                    Cole o link · Escolha o formato · Baixe
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- URL Input -->
+                        <div class="yt-url-row">
+                            <div class="yt-url-input-wrap">
+                                <svg
+                                    class="yt-url-icon"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path
+                                        d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+                                    />
+                                    <path
+                                        d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                                    />
+                                </svg>
+                                <input
+                                    type="url"
+                                    id="ytUrlInput"
+                                    class="yt-url-input"
+                                    placeholder="https://www.youtube.com/watch?v=..."
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                />
+                                <button
+                                    class="yt-url-clear"
+                                    id="ytUrlClear"
+                                    onclick="clearYtUrl()"
+                                    title="Limpar"
+                                >
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2.5"
+                                        stroke-linecap="round"
+                                    >
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <button
+                                class="yt-fetch-btn"
+                                id="ytFetchBtn"
+                                onclick="ytFetchInfo()"
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    width="16"
+                                    height="16"
+                                >
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line
+                                        x1="21"
+                                        y1="21"
+                                        x2="16.65"
+                                        y2="16.65"
+                                    />
+                                </svg>
+                                Buscar
+                            </button>
+                        </div>
+
+                        <!-- Video Preview (hidden until search) -->
+                        <div class="yt-preview" id="ytPreview">
+                            <div class="yt-preview-thumb-wrap">
+                                <img
+                                    id="ytThumb"
+                                    class="yt-preview-thumb"
+                                    src=""
+                                    alt=""
+                                />
+                                <div
+                                    class="yt-preview-duration"
+                                    id="ytDuration"
+                                ></div>
+                            </div>
+                            <div class="yt-preview-meta">
+                                <div
+                                    class="yt-preview-title"
+                                    id="ytTitle"
+                                ></div>
+                                <div
+                                    class="yt-preview-channel"
+                                    id="ytChannel"
+                                ></div>
+                                <div
+                                    class="yt-preview-views"
+                                    id="ytViews"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- Format + Quality (hidden until search) -->
+                        <div class="yt-options" id="ytOptions">
+                            <!-- Format selector -->
+                            <div class="yt-section-label">Formato</div>
+                            <div class="yt-format-grid">
+                                <button
+                                    class="yt-fmt-card active"
+                                    id="fmt-mp3"
+                                    onclick="ytSelectFmt('mp3', this)"
+                                >
+                                    <div class="yt-fmt-card-icon audio">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="M9 18V5l12-2v13" />
+                                            <circle cx="6" cy="18" r="3" />
+                                            <circle cx="18" cy="16" r="3" />
+                                        </svg>
+                                    </div>
+                                    <div class="yt-fmt-card-body">
+                                        <div class="yt-fmt-card-name">MP3</div>
+                                        <div class="yt-fmt-card-desc">
+                                            Somente áudio
+                                        </div>
+                                    </div>
+                                    <div class="yt-fmt-check">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="3"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            width="10"
+                                            height="10"
+                                        >
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <button
+                                    class="yt-fmt-card"
+                                    id="fmt-mp4"
+                                    onclick="ytSelectFmt('mp4', this)"
+                                >
+                                    <div class="yt-fmt-card-icon video">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <polygon
+                                                points="23 7 16 12 23 17 23 7"
+                                            />
+                                            <rect
+                                                x="1"
+                                                y="5"
+                                                width="15"
+                                                height="14"
+                                                rx="2"
+                                                ry="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="yt-fmt-card-body">
+                                        <div class="yt-fmt-card-name">MP4</div>
+                                        <div class="yt-fmt-card-desc">
+                                            Vídeo + áudio
+                                        </div>
+                                    </div>
+                                    <div class="yt-fmt-check">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="3"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            width="10"
+                                            height="10"
+                                        >
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <!-- Quality selector -->
+                            <div
+                                class="yt-section-label"
+                                style="margin-top: 20px"
+                            >
+                                Qualidade
+                            </div>
+                            <div class="yt-quality-row" id="ytQualityRow">
+                                <!-- MP3 qualities (default) -->
+                                <button
+                                    class="yt-q-pill active"
+                                    data-q="128"
+                                    onclick="ytSelectQ('128', this)"
+                                >
+                                    128 kbps
+                                </button>
+                                <button
+                                    class="yt-q-pill"
+                                    data-q="192"
+                                    onclick="ytSelectQ('192', this)"
+                                >
+                                    192 kbps
+                                </button>
+                                <button
+                                    class="yt-q-pill"
+                                    data-q="320"
+                                    onclick="ytSelectQ('320', this)"
+                                >
+                                    320 kbps
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /yt-options -->
+
+                        <!-- Progress bar (shown during download) -->
+                        <div class="yt-progress-wrap" id="ytProgressWrap">
+                            <div class="yt-progress-track">
+                                <div
+                                    class="yt-progress-fill"
+                                    id="ytProgressFill"
+                                ></div>
+                            </div>
+                            <div class="yt-progress-meta">
+                                <span
+                                    class="yt-progress-label"
+                                    id="ytProgressLabel"
+                                    >Processando…</span
+                                >
+                                <span class="yt-progress-pct" id="ytProgressPct"
+                                    >0%</span
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Download Button -->
+                        <button
+                            class="yt-dl-btn"
+                            id="ytDownloadBtn"
+                            onclick="ytDownload()"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                width="20"
+                                height="20"
+                            >
+                                <path
+                                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            <span id="ytDownloadLabel">Baixar MP3</span>
+                        </button>
+
+                        <!-- Error box -->
+                        <div class="yt-error-box" id="ytErrorBox"></div>
+                    </div>
+                    <!-- /yt-card -->
+                </div>
+                <!-- /tab-youtube -->
             </section>
 
             <!-- ══ SUPPORT GRID ══ -->
@@ -225,7 +580,7 @@
                                 class="sup-dot"
                                 style="background: #d8b4fe"
                             ></span
-                            >Áudio
+                            >Áudio & YouTube
                         </div>
                         <div class="sup-rows">
                             <div class="sup-row">
@@ -237,6 +592,11 @@
                                 <span class="sup-from">OGG/AAC</span
                                 ><span class="sup-arrow">→</span
                                 ><span class="sup-to">WEBM</span>
+                            </div>
+                            <div class="sup-row">
+                                <span class="sup-from">YouTube</span
+                                ><span class="sup-arrow">→</span
+                                ><span class="sup-to">MP3, MP4</span>
                             </div>
                         </div>
                     </div>
@@ -375,7 +735,9 @@
         </footer>
 
         <!-- App scripts (order matters) -->
-        <script src="theme.js?v=3"></script>
-        <script src="converter.js?v=3"></script>
+        <script src="theme.js?v=5"></script>
+        <script src="converter.js?v=5"></script>
+        <script src="backend.js?v=5"></script>
+        <script src="youtube.js?v=5"></script>
     </body>
 </html>
