@@ -1,19 +1,14 @@
 /* ═══════════════════════════════════════════════════════════
    VLTX — Conector Frontend ↔ Backend
 
-   Este arquivo conecta a UI do YouTube (youtube.js)
-   ao servidor Flask (server.py).
-
-   Altere BASE_URL se o seu servidor rodar em outra porta.
+   ⚠ APÓS HOSPEDAR NO RAILWAY:
+   Substitua a URL abaixo pela URL do seu serviço.
+   Ex: "https://vltx-backend.up.railway.app"
 ═══════════════════════════════════════════════════════════ */
 
-var BASE_URL = "http://localhost:5000";
+var BASE_URL = "lk-backend-production-91d8.up.railway.app"; // ← trocar aqui
 
 window.YT_BACKEND = {
-  /* ── Busca informações do vídeo ─────────────────────────
-     Chama GET /api/info?v=VIDEO_ID
-     Retorna: { title, channel, views, duration, thumbUrl }
-  ──────────────────────────────────────────────────────── */
   async fetchInfo(videoId) {
     var res = await fetch(BASE_URL + "/api/info?v=" + videoId);
     var data = await res.json();
@@ -21,10 +16,6 @@ window.YT_BACKEND = {
     return data;
   },
 
-  /* ── Faz o download ─────────────────────────────────────
-     Chama GET /api/download?v=VIDEO_ID&fmt=mp3|mp4&q=qualidade
-     O servidor retorna o arquivo diretamente.
-  ──────────────────────────────────────────────────────── */
   async download(videoId, format, quality) {
     var url =
       BASE_URL +
@@ -36,7 +27,6 @@ window.YT_BACKEND = {
       "&q=" +
       encodeURIComponent(quality);
 
-    /* Retorna a URL para o youtube.js fazer o download */
     return {
       downloadUrl: url,
       filename: videoId + "." + format,
