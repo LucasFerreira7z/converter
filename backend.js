@@ -1,12 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
    VLTX — Conector Frontend ↔ Backend
-
-   ⚠ APÓS HOSPEDAR NO RAILWAY:
-   Substitua a URL abaixo pela URL do seu serviço.
-   Ex: "https://vltx-backend.up.railway.app"
 ═══════════════════════════════════════════════════════════ */
 
-var BASE_URL = "lk-backend-production-91d8.up.railway.app"; // ← trocar aqui
+var BASE_URL = "https://lk-backend-production-91d8.up.railway.app";
 
 window.YT_BACKEND = {
   async fetchInfo(videoId) {
@@ -26,7 +22,6 @@ window.YT_BACKEND = {
       encodeURIComponent(format) +
       "&q=" +
       encodeURIComponent(quality);
-
     return {
       downloadUrl: url,
       filename: videoId + "." + format,
